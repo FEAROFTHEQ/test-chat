@@ -1,11 +1,11 @@
-import ChatHead from "../ChatHead/ChatHead";
-import ChatList from "../ChatList/ChatList";
+import ChatHead from "./ChatHead/ChatHead";
+import ChatList from "./ChatList/ChatList";
 
 export default function Sidebar() {
   return (
-    <>
+    <div>
       <ChatHead />
       <ChatList />
-    </>
+    </div>
   );
 }

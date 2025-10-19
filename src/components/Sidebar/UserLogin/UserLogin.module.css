@@ -1,0 +1,13 @@
+.button {
+  background-color: white;
+  color: rgb(71, 146, 252);
+  border-radius: 10px;
+  border: solid 1px rgb(160, 160, 160);
+  padding: 3px 6px;
+}
+
+.user-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
