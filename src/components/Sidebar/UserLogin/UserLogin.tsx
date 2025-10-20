@@ -4,7 +4,7 @@ import user from "../../../public/avatars/user.jpg";
 
 export default function UserLogin() {
   return (
-    <div>
+    <div className={css["container-login"]}>
       <img src={user} alt="Profile picture" className={css["user-avatar"]} />
       <Button text="Log In" className={css.button} />
     </div>

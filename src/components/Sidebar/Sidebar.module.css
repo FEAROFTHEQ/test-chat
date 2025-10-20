@@ -1,0 +1,5 @@
+.container-sidebar {
+  width: 600px;
+  border-right: solid 1px rgb(215, 215, 215);
+  height: 100vh;
+}

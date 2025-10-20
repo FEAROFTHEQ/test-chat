@@ -1,23 +1,24 @@
 import ChatPreview from "../ChatPreview/ChatPreview";
+import css from "./ChatList.module.css";
 
 export default function ChatList() {
   return (
-    <>
-      <h2>Chats</h2>
-      <ul>
-        <li>
+    <div>
+      <h2 className={css.title}>Chats</h2>
+      <ul className={css.list}>
+        <li className={css["list-item"]}>
           <ChatPreview />
         </li>
-        <li>
+        <li className={css["list-item"]}>
           <ChatPreview />
         </li>
-        <li>
+        <li className={css["list-item"]}>
           <ChatPreview />
         </li>
-        <li>
+        <li className={css["list-item"]}>
           <ChatPreview />
         </li>
       </ul>
-    </>
+    </div>
   );
 }

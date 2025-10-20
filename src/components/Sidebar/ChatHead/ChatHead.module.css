@@ -1,0 +1,29 @@
+.container-head {
+  padding: 15px;
+  padding-left: 30px;
+  padding-right: 15px;
+  background-color: rgb(245, 245, 245);
+  border-bottom: solid 1px rgb(215, 215, 215);
+  margin-bottom: 15px;
+}
+.input {
+  border-radius: 20px;
+  border: solid 1px gray;
+  padding: 5px 6px;
+  width: 100%;
+  padding-left: 28px;
+  background-color: rgb(253, 253, 253);
+  outline: none;
+}
+.input:hover,
+:focus {
+  border-color: blue;
+}
+.search {
+  position: absolute;
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  left: 36px;
+  top: 70px;
+}
