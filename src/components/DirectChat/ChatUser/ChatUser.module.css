@@ -1,0 +1,13 @@
+.chat-user-image {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.user-container {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  background-color: rgb(245, 245, 245);
+  border-bottom: solid 1px rgb(215, 215, 215);
+}

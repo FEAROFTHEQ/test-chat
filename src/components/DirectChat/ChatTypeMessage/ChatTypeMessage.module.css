@@ -1,0 +1,28 @@
+.type-container {
+  background-color: rgb(245, 245, 245);
+  padding: 30px 20px;
+  position: relative;
+  border-bottom: solid 1px rgb(215, 215, 215);
+}
+.message {
+  border-radius: 15px;
+  outline: none;
+  border: solid 1px gray;
+  padding: 5px 10px;
+  width: 100%;
+  background-color: rgb(253, 253, 253);
+}
+.send {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  top: 35px;
+  right: 28px;
+}
+.send-icon {
+  height: 100%;
+  width: 100%;
+}

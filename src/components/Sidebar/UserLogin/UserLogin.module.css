@@ -1,3 +1,10 @@
+.container-login {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .button {
   background-color: white;
   color: rgb(71, 146, 252);
@@ -17,11 +24,4 @@
   width: 35px;
   height: 35px;
   border-radius: 50%;
-}
-
-.container-login {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
 }

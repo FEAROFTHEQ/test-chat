@@ -15,9 +15,6 @@ export default function ChatList() {
         <li className={css["list-item"]}>
           <ChatPreview />
         </li>
-        <li className={css["list-item"]}>
-          <ChatPreview />
-        </li>
       </ul>
     </div>
   );
