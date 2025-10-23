@@ -7,6 +7,7 @@
 .chat-date {
   color: rgb(188, 188, 188);
   font-size: 14px;
+  white-space: nowrap;
 }
 .chat-info {
   display: flex;

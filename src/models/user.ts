@@ -15,6 +15,7 @@ const ChatSchema = new Schema(
   {
     chatId: { type: String, required: true },
     chatDate: { type: Date, default: Date.now },
+    avatar: { type: String, required: true },
     sender: {
       name: { type: String, required: false },
     },
@@ -26,7 +27,6 @@ const ChatSchema = new Schema(
 const UserSchema = new Schema(
   {
     id: { type: String, required: true, unique: true },
-    avatar: { type: String, required: true },
     chats: [ChatSchema],
   },
   { timestamps: true }

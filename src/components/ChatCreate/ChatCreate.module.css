@@ -1,17 +1,22 @@
-.chat-user-image {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-.user-container {
+.form {
   display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  background-color: rgb(245, 245, 245);
-  border-bottom: solid 1px rgb(215, 215, 215);
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
 }
 
+.input {
+  outline: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 4px;
+}
+
+.input:focus {
+  border-color: #007bff;
+}
 .button {
   background-color: white;
   color: rgb(71, 146, 252);
@@ -25,7 +30,4 @@
   background-color: rgb(71, 146, 252);
   color: white;
   border-color: rgb(26, 26, 220);
-}
-.name {
-  margin-right: 10px;
 }

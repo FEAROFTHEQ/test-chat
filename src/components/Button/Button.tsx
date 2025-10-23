@@ -2,10 +2,20 @@ interface ButtonProps {
   text: string;
   className: string;
   children?: React.ReactNode;
+  handleClick?: () => void;
+  type?: "button" | "submit" | "reset"; // додано type
 }
 
-export default function Button({ text, className, children }: ButtonProps) {
+export default function Button({
+  text,
+  className,
+  children,
+  handleClick,
+  type = "button",
+}: ButtonProps) {
   return (
-    <button className={className}>{text.length > 0 ? text : children}</button>
+    <button onClick={handleClick} className={className} type={type}>
+      {text.length > 0 ? text : children}
+    </button>
   );
 }

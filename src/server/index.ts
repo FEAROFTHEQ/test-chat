@@ -13,12 +13,13 @@ const app = express();
 app.use(cors());
 const db = process.env.MONGODB_URI as string;
 const PORT = process.env.PORT;
+app.use("/avatars", express.static(path.join(__dirname, "../public/avatars")));
 app.use(express.json());
 
 mongoose
   .connect(db)
   .then(() => {
-    console.log("Connected to MondoDB", db);
+    console.log("Connected to MondoDB");
     app.listen(PORT);
   })
   .catch((err) => console.log("Failed to connect to MongoDB", err));
@@ -26,7 +27,16 @@ mongoose
 console.log("merwer");
 
 const User = mongoose.model("user", UserSchema);
-app.use("/public", express.static(path.join(__dirname, "../../public")));
+
+const avatars = [
+  "avatar-1.jpg",
+  "avatar-2.jpg",
+  "avatar-3.jpg",
+  "avatar-4.jpg",
+  "avatar-5.jpg",
+  "avatar-6.jpg",
+  "avatar-7.jpg",
+];
 
 app.post("/api/users/init", async (req, res) => {
   const { id } = req.body;
@@ -43,6 +53,9 @@ app.post("/api/users/init", async (req, res) => {
         {
           chatId: uuidv4(),
           chatDate: new Date(),
+          avatar: `/avatars/${
+            avatars[Math.floor(Math.random() * avatars.length)]
+          }`,
           sender: { name: "Alice Freeman" },
           messages: [
             {
@@ -56,6 +69,9 @@ app.post("/api/users/init", async (req, res) => {
         {
           chatId: uuidv4(),
           chatDate: new Date(),
+          avatar: `/avatars/${
+            avatars[Math.floor(Math.random() * avatars.length)]
+          }`,
           sender: { name: "Josephina Pit" },
           messages: [
             {
@@ -69,6 +85,9 @@ app.post("/api/users/init", async (req, res) => {
         {
           chatId: uuidv4(),
           chatDate: new Date(),
+          avatar: `/avatars/${
+            avatars[Math.floor(Math.random() * avatars.length)]
+          }`,
           sender: { name: "Velazquez Smith" },
           messages: [
             {
@@ -80,26 +99,12 @@ app.post("/api/users/init", async (req, res) => {
           ],
         },
       ];
-      const avatars = [
-        "avatar-1.png",
-        "avatar-2.png",
-        "avatar-3.png",
-        "avatar-4.png",
-        "avatar-5.png",
-        "avatar-6.png",
-        "avatar-7.png",
-      ];
-
-      const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
 
       user = new User({
         id,
-        avatar: `/avatars/${randomAvatar}`,
         chats: premadeChats,
       });
-
       await user.save();
-      console.log("User saved:", user);
     }
 
     res.send(user);

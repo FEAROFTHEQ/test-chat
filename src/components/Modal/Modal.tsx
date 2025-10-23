@@ -1,11 +1,16 @@
 import { createPortal } from "react-dom";
 import css from "./Modal.module.css";
+import type { ReactNode } from "react";
 
 interface ModalProps {
   onClose: () => void;
+  children: ReactNode;
 }
 
-export default function Modal({ onClose }: ModalProps) {
+export default function Modal({ onClose, children }: ModalProps) {
+  const modalRoot = document.getElementById("modal-root");
+
+  if (!modalRoot) return null;
   return createPortal(
     <div className={css.backdrop}>
       <div className={css.modal}>
@@ -16,11 +21,9 @@ export default function Modal({ onClose }: ModalProps) {
         >
           &times;
         </button>
-
-        <h2>Modal Title</h2>
-        <p>This is some content inside the modal.</p>
+        {children}
       </div>
     </div>,
-    document.body
+    modalRoot
   );
 }

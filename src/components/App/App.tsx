@@ -5,13 +5,22 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import fetchUser from "../service/fetchUser";
 import Modal from "../Modal/Modal";
+import type { ModalContentType } from "../../types/modal";
+import ChatCreate from "../ChatCreate/ChatCreate";
 
 function App() {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [modalContent, setModalContent] = useState<ModalContentType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = (type: ModalContentType) => {
+    setModalContent(type);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalContent(null);
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -21,7 +30,6 @@ function App() {
       localStorage.setItem("userId", storedId);
     }
     setUserId(storedId);
-    console.log(userId);
 
     async function fetch(id: string) {
       try {
@@ -40,10 +48,15 @@ function App() {
 
   return (
     <div className={css.container}>
-      <Sidebar />
-      <DirectChat />
-      <button onClick={openModal}>Open modal</button>
-      {isModalOpen && <Modal onClose={closeModal} />}
+      {loading && <p>Loading...</p>}
+      <Sidebar userId={userId} onModal={openModal} />
+      <DirectChat onModal={openModal} />
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          {modalContent === "create" && <ChatCreate />}
+          {/* {modalType === "edit" && <ChatEditForm onSuccess={closeModal} />} */}
+        </Modal>
+      )}
     </div>
   );
 }
