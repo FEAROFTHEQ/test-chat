@@ -7,7 +7,7 @@ import fetchUser from "../service/fetchUser";
 import Modal from "../Modal/Modal";
 import type { ModalContentType } from "../../types/modal";
 import ChatCreate from "../ChatCreate/ChatCreate";
-import { createChat, editChat } from "../service/submit";
+import { createChat, deleteChat, editChat } from "../service/submit";
 import type { Chat } from "../../types/userInfo";
 import ChatEdit from "../ChatEdit/ChatEdit";
 
@@ -16,8 +16,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState<ModalContentType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [chats, setChats] = useState<Array<object>>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const openModal = (type: ModalContentType) => {
     setModalContent(type);
     setIsModalOpen(true);
@@ -69,9 +70,8 @@ function App() {
     fetch(userId);
   }, [chats]);
 
-  async function handleSubmit(formData: FormData) {
-    const firstName = formData.get("first-name") as string;
-    const lastName = formData.get("last-name") as string;
+  async function handleSubmit(data: { firstName: string; lastName: string }) {
+    const { firstName, lastName } = data;
     if (!userId) return;
     try {
       if (modalContent === "create") {
@@ -79,16 +79,51 @@ function App() {
           { userData: { firstName, lastName } },
           userId
         );
-        setChats((prev) => [...prev, response]);
+        const newChat: Chat = {
+          chatId: "",
+          chatDate: new Date(),
+          avatar: "",
+          sender: { name: `${firstName} ${lastName}` },
+          messages: [],
+        };
+        setChats((prev) => [...prev, newChat]);
         console.log("firs name:", firstName, "| last name:", lastName);
         console.log(response);
-      } else if (modalContent === "edit") {
-        await editChat({ firstName, lastName });
+      } else if (modalContent === "edit" && activeChat) {
+        const response = await editChat({
+          chatId: activeChat.chatId,
+          firstName,
+          lastName,
+        });
+        setChats((prev) => [...prev, response]);
+
+        setActiveChat((prev) =>
+          prev && prev.chatId === activeChat.chatId
+            ? { ...prev, sender: { name: `${firstName} ${lastName}` } }
+            : prev
+        );
       }
       closeModal();
       // додати повідомлення про успіх
     } catch (error) {
       console.error("Error:", error);
+    }
+  }
+
+  async function handleDeleteChat(chatId: string) {
+    const confirmed = window.confirm(
+      "Are you really want to delete this chat?"
+    );
+    if (!confirmed) return;
+    try {
+      const response = await deleteChat(chatId);
+      closeModal();
+      setChats((prev) => [...prev, response]);
+      if (!userId) return;
+      const data = await fetchUser(userId);
+      setActiveChat(data.chats[0] || null);
+    } catch (error) {
+      console.error("Error deleting chat:", error);
     }
   }
 
@@ -105,8 +140,21 @@ function App() {
       {isModalOpen && (
         <Modal onClose={closeModal}>
           {modalContent === "create" && <ChatCreate onSubmit={handleSubmit} />}
-          {modalContent === "edit" && (
-            <ChatEdit onSuccess={closeModal} onSubmit={handleSubmit} />
+          {modalContent === "edit" && activeChat && (
+            <ChatEdit
+              chatId={activeChat.chatId}
+              onClose={closeModal}
+              onSubmit={handleSubmit}
+              defaultName={activeChat.sender.name}
+              onDelete={handleDeleteChat}
+            />
+            // <ChatEdit
+            //   onClose={closeModal}
+            //   onSubmit={handleSubmit}
+            //   defaultName={activeChat?.sender.name || ""}
+            //   onDelete={handleDeleteChat}
+            //   chatId={activeChat && activeChat.chatId}
+            // />
           )}
         </Modal>
       )}

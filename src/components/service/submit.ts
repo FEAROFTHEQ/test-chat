@@ -5,6 +5,12 @@ interface createChatData {
   userData: { firstName: string; lastName: string };
 }
 
+interface EditChatParams {
+  firstName: string;
+  lastName: string;
+  chatId: string;
+}
+
 export async function createChat(
   userData: createChatData,
   userId: string
@@ -15,4 +21,19 @@ export async function createChat(
   );
   return response.data;
 }
-export async function editChat() {}
+export async function editChat({
+  chatId,
+  firstName,
+  lastName,
+}: EditChatParams) {
+  const response = await axios.post(`${API_BASE_URL}/chats/${chatId}/rename`, {
+    firstName,
+    lastName,
+  });
+  return response.data;
+}
+
+export async function deleteChat(chatId: string) {
+  const response = await axios.delete(`${API_BASE_URL}/chats/${chatId}`);
+  return response.data;
+}

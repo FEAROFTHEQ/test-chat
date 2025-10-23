@@ -1,7 +1,7 @@
 import Button from "../Button/Button";
 import css from "./ChatCreate.module.css";
 interface ChatCreateProps {
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (data: { firstName: string; lastName: string }) => void;
 }
 
 export default function ChatCreate({ onSubmit }: ChatCreateProps) {
@@ -9,8 +9,13 @@ export default function ChatCreate({ onSubmit }: ChatCreateProps) {
     <form
       className={css.form}
       action={(formData) => {
+        const firstName = formData.get("first-name") as string;
+        const lastName = formData.get("last-name") as string;
+        const trimmedFirst = firstName.trim();
+        const trimmedLast = lastName.trim();
+        if (!trimmedFirst || !trimmedLast) return;
         console.log("submit");
-        onSubmit(formData);
+        onSubmit({ firstName: trimmedFirst, lastName: trimmedLast });
       }}
     >
       <input

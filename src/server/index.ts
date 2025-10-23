@@ -168,3 +168,52 @@ app.post("/api/chats/:chatId/messages", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
+app.post("/api/chats/:chatId/rename", async (req, res) => {
+  const { chatId } = req.params;
+  const { firstName, lastName } = req.body;
+  console.log(firstName, lastName);
+  if (!firstName || !lastName) {
+    return res
+      .status(400)
+      .json({ error: "First name and last name are required" });
+  }
+
+  try {
+    const user = await User.findOne({ "chats.chatId": chatId });
+    if (!user) return res.status(404).json({ error: "Chat not found" });
+
+    const chat = user.chats.find((c) => c.chatId === chatId);
+    if (!chat) return res.status(404).json({ error: "Chat not found" });
+    if (!chat.sender) {
+      chat.sender = { name: "" };
+    }
+    chat.sender.name = `${firstName.trim()} ${lastName.trim()}`;
+
+    await user.save();
+
+    res.status(200).json({ message: "Chat renamed successfully", chat });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete("/api/chats/:chatId", async (req, res) => {
+  const { chatId } = req.params;
+
+  try {
+    const user = await User.findOne({ "chats.chatId": chatId });
+    if (!user) return res.status(404).json({ error: "Chat not found" });
+
+    user.chats = user.chats.filter(
+      (chat) => chat.chatId !== chatId
+    ) as typeof user.chats;
+    await user.save();
+    console.log("DELETED ");
+    res.json({ success: true, chatId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
