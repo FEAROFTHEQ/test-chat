@@ -23,9 +23,6 @@ mongoose
     app.listen(PORT);
   })
   .catch((err) => console.log("Failed to connect to MongoDB", err));
-
-console.log("merwer");
-
 const User = mongoose.model("user", UserSchema);
 
 const avatars = [
@@ -38,10 +35,12 @@ const avatars = [
   "avatar-7.jpg",
 ];
 
+function getRandomAvatar() {
+  return `/avatars/${avatars[Math.floor(Math.random() * avatars.length)]}`;
+}
+
 app.post("/api/users/init", async (req, res) => {
   const { id } = req.body;
-  console.log(req.body);
-  console.log(id);
   if (!id) {
     return res.status(400).json({ error: "Id is required" });
   }
@@ -53,9 +52,7 @@ app.post("/api/users/init", async (req, res) => {
         {
           chatId: uuidv4(),
           chatDate: new Date(),
-          avatar: `/avatars/${
-            avatars[Math.floor(Math.random() * avatars.length)]
-          }`,
+          avatar: getRandomAvatar(),
           sender: { name: "Alice Freeman" },
           messages: [
             {
@@ -69,9 +66,7 @@ app.post("/api/users/init", async (req, res) => {
         {
           chatId: uuidv4(),
           chatDate: new Date(),
-          avatar: `/avatars/${
-            avatars[Math.floor(Math.random() * avatars.length)]
-          }`,
+          avatar: getRandomAvatar(),
           sender: { name: "Josephina Pit" },
           messages: [
             {
@@ -85,9 +80,7 @@ app.post("/api/users/init", async (req, res) => {
         {
           chatId: uuidv4(),
           chatDate: new Date(),
-          avatar: `/avatars/${
-            avatars[Math.floor(Math.random() * avatars.length)]
-          }`,
+          avatar: getRandomAvatar(),
           sender: { name: "Velazquez Smith" },
           messages: [
             {
@@ -110,6 +103,68 @@ app.post("/api/users/init", async (req, res) => {
     res.send(user);
   } catch (err) {
     console.error("Error", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/create/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { userData } = req.body;
+  console.log(userData);
+  if (!userId || !userData) {
+    return res.status(400).json({ error: "Missing userId or chatData" });
+  }
+
+  try {
+    const user = await User.findOne({ id: userId });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const senderName = `${userData.firstName} ${userData.lastName}`;
+    console.log(senderName);
+    const newChat = {
+      chatId: uuidv4(),
+      chatDate: new Date(),
+      avatar: getRandomAvatar(),
+      sender: { name: senderName },
+      messages: [],
+    };
+
+    user.chats.push(newChat);
+    await user.save();
+
+    res.send(newChat);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/chats/:chatId/messages", async (req, res) => {
+  const { chatId } = req.params;
+  const { content } = req.body;
+  console.log(content);
+  if (!content) {
+    return res.status(400).json({ error: "Missing content" });
+  }
+  try {
+    const user = await User.findOne({ "chats.chatId": chatId });
+    if (!user) return res.status(404).json({ error: "Chat not found" });
+
+    const chat = user.chats.find((c) => c.chatId === chatId);
+    if (!chat) return res.status(404).json({ error: "Chat not found" });
+
+    const newMessage = {
+      messageId: uuidv4(),
+      senderOfMessage: "user",
+      content,
+      created: new Date(),
+    };
+
+    chat.messages.push(newMessage);
+    await user.save();
+
+    res.send(newMessage);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 });

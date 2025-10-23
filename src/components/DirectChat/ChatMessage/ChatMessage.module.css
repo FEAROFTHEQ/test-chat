@@ -4,9 +4,9 @@
   border-radius: 50%;
   margin-right: 10px;
 }
-.message-img {
-  display: flex;
-  align-items: center;
+.system-img {
+  /* display: flex; */
+  /* align-items: center; */
   margin-bottom: 2px;
 }
 .message-text {
@@ -23,10 +23,17 @@
   padding-left: 45px;
   display: inline-block;
 }
-.user {
-  display: none;
-}
+
 .user-text {
   color: black;
   background-color: rgb(217, 217, 217);
+}
+.user-img {
+  display: none;
+}
+
+.message-img {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
 }

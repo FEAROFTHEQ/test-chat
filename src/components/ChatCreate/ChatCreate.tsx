@@ -1,12 +1,16 @@
 import Button from "../Button/Button";
 import css from "./ChatCreate.module.css";
+interface ChatCreateProps {
+  onSubmit: (formData: FormData) => void;
+}
 
-export default function ChatCreate() {
+export default function ChatCreate({ onSubmit }: ChatCreateProps) {
   return (
     <form
       className={css.form}
-      action={() => {
+      action={(formData) => {
         console.log("submit");
+        onSubmit(formData);
       }}
     >
       <input
