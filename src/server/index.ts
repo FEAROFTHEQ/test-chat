@@ -5,7 +5,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import { UserSchema } from "../models/user.ts";
+import { UserSchema } from "../models/user";
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

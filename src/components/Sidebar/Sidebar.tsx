@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import ChatHead from "./ChatHead/ChatHead";
 import ChatList from "./ChatList/ChatList";
 import css from "./Sidebar.module.css";
-import type { Chat, UserInfo } from "../../types/userInfo.ts";
-import fetchUser from "../service/fetchUser.ts";
-import type { ModalContentType } from "../../types/modal.ts";
+import type { Chat, UserInfo } from "../../types/userInfo";
+import fetchUser from "../service/fetchUser";
+import type { ModalContentType } from "../../types/modal";
 
 interface SidebarProps {
   userId: string | null;

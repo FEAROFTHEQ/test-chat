@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL } from "./api.ts";
+import { API_BASE_URL } from "./api";
 import type { Chat } from "../../types/userInfo.ts";
 
 interface createChatData {

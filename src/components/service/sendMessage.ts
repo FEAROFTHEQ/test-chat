@@ -1,6 +1,6 @@
 import type { Message } from "./../../types/userInfo";
 import axios from "axios";
-import { API_BASE_URL } from "./api.ts";
+import { API_BASE_URL } from "./api";
 
 export default async function sendMessage(
   chatId: string,
