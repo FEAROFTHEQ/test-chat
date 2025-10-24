@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "./api.ts";
+import type { Chat } from "../../types/userInfo.ts";
 
 interface createChatData {
   userData: { firstName: string; lastName: string };
@@ -14,8 +15,8 @@ interface EditChatParams {
 export async function createChat(
   userData: createChatData,
   userId: string
-): Promise<createChatData> {
-  const response = await axios.post<createChatData>(
+): Promise<Chat> {
+  const response = await axios.post<Chat>(
     `${API_BASE_URL}/create/${userId}`,
     userData
   );

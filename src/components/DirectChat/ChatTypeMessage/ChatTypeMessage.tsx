@@ -1,12 +1,14 @@
 import Button from "../../Button/Button";
 import css from "./ChatTypeMessage.module.css";
 import send from "../../../public/icons/send.svg";
-import type { Chat, Message } from "../../../types/userInfo";
+import type { Chat} from "../../../types/userInfo";
 import { useState } from "react";
 import sendMessage from "../../service/sendMessage";
+import type { NewMessagePayload } from "../../../types/message";
+
 interface ChatTypeMessageProps {
   chat: Chat;
-  onNewMessage: (message: Message) => void;
+  onNewMessage: (payload: NewMessagePayload) => void;
 }
 
 export default function ChatTypeMessage({
@@ -17,8 +19,8 @@ export default function ChatTypeMessage({
   async function handleSubmit(formData: FormData) {
     const content = formData.get("message") as string;
     try {
-      const newMessage = await sendMessage(chat.chatId, content.trim());
-      onNewMessage(newMessage);
+      const newMessage = await sendMessage(chat.chatId, content.trim(), "user");
+      onNewMessage({ message: newMessage, targetChatId: chat.chatId });
       setMessage("");
     } catch (error) {
       console.error("Failed to send message", error);

@@ -2,10 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import path from "path";
-import { UserSchema, ChatSchema, MessageSchema } from "../models/user.ts";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 import cors from "cors";
+import { UserSchema } from "../models/user.ts";
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,7 +110,6 @@ app.post("/api/users/init", async (req, res) => {
 app.post("/api/create/:userId", async (req, res) => {
   const { userId } = req.params;
   const { userData } = req.body;
-  console.log(userData);
   if (!userId || !userData) {
     return res.status(400).json({ error: "Missing userId or chatData" });
   }
@@ -119,7 +118,6 @@ app.post("/api/create/:userId", async (req, res) => {
     const user = await User.findOne({ id: userId });
     if (!user) return res.status(404).json({ error: "User not found" });
     const senderName = `${userData.firstName} ${userData.lastName}`;
-    console.log(senderName);
     const newChat = {
       chatId: uuidv4(),
       chatDate: new Date(),
@@ -140,8 +138,7 @@ app.post("/api/create/:userId", async (req, res) => {
 
 app.post("/api/chats/:chatId/messages", async (req, res) => {
   const { chatId } = req.params;
-  const { content } = req.body;
-  console.log(content);
+  const { content, senderOfMessage } = req.body;
   if (!content) {
     return res.status(400).json({ error: "Missing content" });
   }
@@ -154,7 +151,7 @@ app.post("/api/chats/:chatId/messages", async (req, res) => {
 
     const newMessage = {
       messageId: uuidv4(),
-      senderOfMessage: "user",
+      senderOfMessage: senderOfMessage || "user",
       content,
       created: new Date(),
     };
@@ -210,7 +207,6 @@ app.delete("/api/chats/:chatId", async (req, res) => {
       (chat) => chat.chatId !== chatId
     ) as typeof user.chats;
     await user.save();
-    console.log("DELETED ");
     res.json({ success: true, chatId });
   } catch (err) {
     console.error(err);

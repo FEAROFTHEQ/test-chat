@@ -3,7 +3,7 @@ interface ButtonProps {
   className: string;
   children?: React.ReactNode;
   handleClick?: () => void;
-  type?: "button" | "submit" | "reset"; // додано type
+  type?: "button" | "submit" | "reset";
 }
 
 export default function Button({

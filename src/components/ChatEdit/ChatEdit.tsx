@@ -28,8 +28,6 @@ export default function ChatEdit({
     const trimmedFirst = firstName.trim();
     const trimmedLast = lastName.trim();
     if (!trimmedFirst || !trimmedLast) return;
-    console.log(defaultName);
-
     onSubmit({ firstName: trimmedFirst, lastName: trimmedLast });
     onClose();
   }
@@ -54,14 +52,6 @@ export default function ChatEdit({
         placeholder="Last Name"
         required
       />
-      {/* <input
-        className={css.input}
-        type="text"
-        name="chat-name"
-        placeholder="Chat Name"
-        defaultValue={defaultName}
-        required
-      /> */}
       <div className={css.buttons}>
         <Button text="Save" type="submit" className={css.button} />
         <Button

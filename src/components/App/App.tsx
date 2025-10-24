@@ -1,24 +1,25 @@
-import DirectChat from "../DirectChat/DirectChat";
-import Sidebar from "../Sidebar/Sidebar";
-import css from "./App.module.css";
+import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import css from "./App.module.css";
+import DirectChat from "../DirectChat/DirectChat";
+import Sidebar from "../Sidebar/Sidebar";
 import fetchUser from "../service/fetchUser";
 import Modal from "../Modal/Modal";
-import type { ModalContentType } from "../../types/modal";
 import ChatCreate from "../ChatCreate/ChatCreate";
-import { createChat, deleteChat, editChat } from "../service/submit";
-import type { Chat } from "../../types/userInfo";
 import ChatEdit from "../ChatEdit/ChatEdit";
+import Loader from "../Loader/Loader";
+import { createChat, deleteChat, editChat } from "../service/submit";
+import type { ModalContentType } from "../../types/modal";
+import type { Chat } from "../../types/userInfo";
 
-function App() {
+export default function App() {
   const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [modalContent, setModalContent] = useState<ModalContentType>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const openModal = (type: ModalContentType) => {
     setModalContent(type);
     setIsModalOpen(true);
@@ -29,46 +30,47 @@ function App() {
   };
 
   useEffect(() => {
-    setLoading(true);
     let storedId = localStorage.getItem("userId");
     if (!storedId) {
       storedId = uuidv4();
       localStorage.setItem("userId", storedId);
     }
     setUserId(storedId);
-
-    async function fetch(id: string) {
-      try {
-        const data = await fetchUser(id);
-        if (!activeChat && data.chats.length > 0) {
-          setActiveChat(data.chats[0]);
-        }
-        console.log(data);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    if (userId) {
-      fetch(userId);
-    }
-  }, [userId]);
-
+  }, []);
   useEffect(() => {
-    console.log("CHATS EFFECT");
     if (!userId) return;
 
     async function fetch(id: string) {
       try {
+        const data = await fetchUser(id);
+        setChats(data.chats);
+        if (!activeChat && data.chats.length > 0) {
+          setActiveChat(data.chats[0]);
+        }
+      } catch (err) {
+        toast.error("Sorry, error happened!");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetch(userId);
+  }, [userId, activeChat]);
+
+  useEffect(() => {
+    if (!userId) return;
+    async function fetch(id: string) {
+      try {
         await fetchUser(id);
       } catch (err) {
+        toast.error("Sorry, error happened!");
         console.log(err);
       }
     }
 
     fetch(userId);
-  }, [chats]);
+  }, [chats, userId]);
 
   async function handleSubmit(data: { firstName: string; lastName: string }) {
     const { firstName, lastName } = data;
@@ -79,33 +81,38 @@ function App() {
           { userData: { firstName, lastName } },
           userId
         );
-        const newChat: Chat = {
-          chatId: "",
-          chatDate: new Date(),
-          avatar: "",
-          sender: { name: `${firstName} ${lastName}` },
-          messages: [],
-        };
-        setChats((prev) => [...prev, newChat]);
-        console.log("firs name:", firstName, "| last name:", lastName);
-        console.log(response);
+        setChats((prev) => [...prev, response]);
+        toast.success(
+          `You successfully created new chat with ${firstName} ${lastName}!`
+        );
       } else if (modalContent === "edit" && activeChat) {
-        const response = await editChat({
+        await editChat({
           chatId: activeChat.chatId,
           firstName,
           lastName,
         });
-        setChats((prev) => [...prev, response]);
+        setChats((prev) =>
+          prev.map((chat) =>
+            chat.chatId === activeChat.chatId
+              ? {
+                  ...chat,
+                  sender: { name: `${firstName} ${lastName}` },
+                  messages: chat.messages,
+                }
+              : chat
+          )
+        );
 
         setActiveChat((prev) =>
-          prev && prev.chatId === activeChat.chatId
-            ? { ...prev, sender: { name: `${firstName} ${lastName}` } }
+          prev
+            ? chats.find((chat) => chat.chatId === prev.chatId) || prev
             : prev
         );
+        toast.success(`You successfully changed name!`);
       }
       closeModal();
-      // додати повідомлення про успіх
     } catch (error) {
+      toast.error("Sorry, error happened!");
       console.error("Error:", error);
     }
   }
@@ -116,27 +123,35 @@ function App() {
     );
     if (!confirmed) return;
     try {
-      const response = await deleteChat(chatId);
+      await deleteChat(chatId);
       closeModal();
-      setChats((prev) => [...prev, response]);
+      setChats((prev) => prev.filter((chat) => chat.chatId !== chatId));
+
       if (!userId) return;
       const data = await fetchUser(userId);
       setActiveChat(data.chats[0] || null);
     } catch (error) {
+      toast.error("Sorry, error happened!");
       console.error("Error deleting chat:", error);
     }
   }
 
   return (
     <div className={css.container}>
-      {loading && <p>Loading...</p>}
+      {loading && <Loader />}
       <Sidebar
         userId={userId}
         onModal={openModal}
         chats={chats}
         setActiveChat={setActiveChat}
+        setChats={setChats}
       />
-      <DirectChat onModal={openModal} userId={userId} activeChat={activeChat} />
+      <DirectChat
+        onModal={openModal}
+        userId={userId}
+        activeChat={activeChat}
+        setChats={setChats}
+      />
       {isModalOpen && (
         <Modal onClose={closeModal}>
           {modalContent === "create" && <ChatCreate onSubmit={handleSubmit} />}
@@ -148,18 +163,10 @@ function App() {
               defaultName={activeChat.sender.name}
               onDelete={handleDeleteChat}
             />
-            // <ChatEdit
-            //   onClose={closeModal}
-            //   onSubmit={handleSubmit}
-            //   defaultName={activeChat?.sender.name || ""}
-            //   onDelete={handleDeleteChat}
-            //   chatId={activeChat && activeChat.chatId}
-            // />
           )}
         </Modal>
       )}
+      <Toaster position="top-right" />
     </div>
   );
 }
-
-export default App;

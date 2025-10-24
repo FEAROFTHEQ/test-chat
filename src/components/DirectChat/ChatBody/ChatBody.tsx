@@ -6,7 +6,7 @@ interface ChatBodyProps {
   chat: Chat;
 }
 
-function ChatBody({ chat }: ChatBodyProps) {
+export default function ChatBody({ chat }: ChatBodyProps) {
   const containerRef = useRef<HTMLUListElement>(null);
   useEffect(() => {
     if (containerRef.current) {
@@ -17,10 +17,10 @@ function ChatBody({ chat }: ChatBodyProps) {
   return (
     <ul className={css["message-container"]} ref={containerRef}>
       {messages.map((message) => {
-        const isUser = message.senderOfMessage === "user"; // 👈 твоє поле
+        const isUser = message.senderOfMessage === "user";
         const messageClasses = [
           css.message,
-          isUser ? css.user : css.system, // різні стилі
+          isUser ? css.user : css.system,
         ].join(" ");
 
         return (
@@ -32,5 +32,3 @@ function ChatBody({ chat }: ChatBodyProps) {
     </ul>
   );
 }
-
-export default ChatBody;

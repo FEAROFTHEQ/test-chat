@@ -1,0 +1,13 @@
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 20px;
+  border: solid 1px black;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 1000;
+}
