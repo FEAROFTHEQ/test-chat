@@ -9,8 +9,15 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node"],
+    "allowImportingTsExtensions": true
+  },
+  "ts-node": {
+    "esm": true
+    // "swc": true
   },
   "include": ["src"]
 }

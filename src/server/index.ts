@@ -5,7 +5,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import { UserSchema } from "../models/user";
+import { UserSchema } from "../models/user.ts";
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +13,11 @@ const app = express();
 app.use(cors());
 const db = process.env.MONGODB_URI as string;
 const PORT = process.env.PORT;
-app.use("/avatars", express.static(path.join(__dirname, "../public/avatars")));
+app.use(
+  "/api/avatars",
+  express.static(path.join(__dirname, "../public/avatars"))
+);
+
 app.use(express.json());
 
 mongoose

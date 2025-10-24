@@ -2,24 +2,31 @@
   "name": "test-chat",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
-    "start": "ts-node src/server/index.ts",
-    "build": "tsc -b"
+    "dev:server": "nodemon --watch src --ext ts --exec ts-node-esm src/server/index.ts",
+    "dev:client": "vite",
+    "dev": "concurrently npm:dev:server npm:dev:client",
+    "start": "node --loader ts-node/esm src/server/index.ts",
+    "build": "tsc -b && vite build"
   },
   "dependencies": {
     "axios": "^1.12.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "modern-normalize": "^3.0.1",
     "mongoose": "^8.19.2",
     "react-hot-toast": "^2.6.0",
+    "use-debounce": "^10.0.6",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@swc/core": "^1.13.21",
     "@types/express": "^5.0.3",
     "@types/node": "^24.9.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react-swc": "^4.2.0",
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",
